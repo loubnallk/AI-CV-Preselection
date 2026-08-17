@@ -1,24 +1,25 @@
 from sentence_transformers.util import cos_sim
 
-from services.embeddings import get_embedding
+from services.chunking import chunk_text
+from services.embeddings import get_embedding, get_embeddings
 
 
 def cosine_similarity(vec_a: list[float], vec_b: list[float]) -> float:
     """
-    Calcule la similarité cosinus entre deux vecteurs d'embedding.
+    Calcule la similarite cosinus entre deux vecteurs d'embedding.
 
     Args:
         vec_a: premier vecteur.
         vec_b: second vecteur.
 
     Returns:
-        Score de similarité entre 0 et 1 (plus haut = plus similaire).
+        Score de similarite entre 0 et 1 (plus haut = plus similaire).
 
     Raises:
-        ValueError: si les vecteurs sont vides ou de dimensions différentes.
+        ValueError: si les vecteurs sont vides ou de dimensions differentes.
     """
     if not vec_a or not vec_b:
-        raise ValueError("Les vecteurs ne peuvent pas être vides.")
+        raise ValueError("Les vecteurs ne peuvent pas etre vides.")
 
     if len(vec_a) != len(vec_b):
         raise ValueError(
@@ -28,37 +29,31 @@ def cosine_similarity(vec_a: list[float], vec_b: list[float]) -> float:
     return round(float(cos_sim(vec_a, vec_b)), 4)
 
 
-def rank_candidates(
-    job_embedding: list[float],
-    candidates: list[dict],
-) -> list[dict]:
+def score_cv_against_job(job_embedding: list[float], cv_text: str) -> dict:
     """
-    Classe des candidats par similarité avec une offre d'emploi.
-
-    Args:
-        job_embedding: vecteur d'embedding de l'offre.
-        candidates: liste de dicts avec au minimum "filename" et "embedding".
+    Score un CV via le passage le plus proche de l'offre.
 
     Returns:
-        Liste triée par score décroissant, chaque élément contient
-        filename, score et rank.
+        dict avec score et best_match_excerpt.
     """
-    if not candidates:
-        return []
+    chunks = chunk_text(cv_text)
+    if not chunks:
+        raise ValueError("Le CV ne contient aucun texte exploitable.")
 
-    scored = []
-    for candidate in candidates:
-        filename = candidate["filename"]
-        embedding = candidate["embedding"]
-        score = cosine_similarity(job_embedding, embedding)
-        scored.append({"filename": filename, "score": score})
+    chunk_embeddings = get_embeddings(chunks)
 
-    scored.sort(key=lambda item: item["score"], reverse=True)
+    best_score = -1.0
+    best_excerpt = chunks[0]
+    for chunk, chunk_embedding in zip(chunks, chunk_embeddings):
+        score = cosine_similarity(job_embedding, chunk_embedding)
+        if score > best_score:
+            best_score = score
+            best_excerpt = chunk
 
-    for index, item in enumerate(scored, start=1):
-        item["rank"] = index
-
-    return scored
+    return {
+        "score": best_score,
+        "best_match_excerpt": best_excerpt,
+    }
 
 
 def rank_candidates_from_texts(
@@ -66,23 +61,31 @@ def rank_candidates_from_texts(
     candidates: list[dict],
 ) -> list[dict]:
     """
-    Encode des textes puis classe les candidats par pertinence.
+    Encode l'offre puis classe les candidats par pertinence (matching par chunks).
 
     Args:
         job_text: texte de l'offre d'emploi.
         candidates: liste de dicts avec au minimum "filename" et "text".
 
     Returns:
-        Liste triée par score décroissant (filename, score, rank).
+        Liste triee par score decroissant (filename, score, rank, best_match_excerpt).
     """
     job_embedding = get_embedding(job_text)
 
-    embedded_candidates = [
-        {
-            "filename": candidate["filename"],
-            "embedding": get_embedding(candidate["text"]),
-        }
-        for candidate in candidates
-    ]
+    scored = []
+    for candidate in candidates:
+        match = score_cv_against_job(job_embedding, candidate["text"])
+        scored.append(
+            {
+                "filename": candidate["filename"],
+                "score": match["score"],
+                "best_match_excerpt": match["best_match_excerpt"],
+            }
+        )
 
-    return rank_candidates(job_embedding, embedded_candidates)
+    scored.sort(key=lambda item: item["score"], reverse=True)
+
+    for index, item in enumerate(scored, start=1):
+        item["rank"] = index
+
+    return scored

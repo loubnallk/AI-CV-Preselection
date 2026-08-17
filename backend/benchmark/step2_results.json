@@ -1,0 +1,51 @@
+{
+  "timestamp": "2026-08-17T10:11:35.132667+00:00",
+  "model_name": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+  "matching_strategy": "chunk_max_similarity",
+  "job_description": "Développeur Python FastAPI — Nous recherchons un développeur backend Python avec au minimum 3 ans d'expérience. Maîtrise de FastAPI, conception d'APIs REST et bonnes pratiques de développement. Connaissance SQL appréciée. Mission : concevoir et maintenir des services API pour notre plateforme.",
+  "candidate_count": 6,
+  "results": [
+    {
+      "filename": "cv_long_mixed.pdf",
+      "score": 0.8258,
+      "best_match_excerpt": "Developpeur Python senior. 4 ans d’experience FastAPI, APIs REST, PostgreSQL.",
+      "rank": 1,
+      "label": "pertinent"
+    },
+    {
+      "filename": "cv_python_fastapi.pdf",
+      "score": 0.8008,
+      "best_match_excerpt": "Developpeur Python senior. 4 ans d’experience en developpement backend avec FastAPI et Flask. Conception d’APIs REST, PostgreSQL, tests unitaires.",
+      "rank": 2,
+      "label": "pertinent"
+    },
+    {
+      "filename": "cv_python_django.pdf",
+      "score": 0.6895,
+      "best_match_excerpt": "Ingenieur logiciel Python. 3 ans d’experience Django et Celery. Developpement web, bases de donnees MySQL, bonnes pratiques Agile.",
+      "rank": 3,
+      "label": "partiellement_pertinent"
+    },
+    {
+      "filename": "cv_java_spring.pdf",
+      "score": 0.4068,
+      "best_match_excerpt": "Developpeur Java backend. 5 ans d’experience Spring Boot, microservices, APIs REST, Kubernetes.",
+      "rank": 4,
+      "label": "partiellement_pertinent"
+    },
+    {
+      "filename": "cv_data_analyst.pdf",
+      "score": 0.4029,
+      "best_match_excerpt": "Data Analyst. Python pour l’analyse de donnees, pandas, SQL, visualisation Tableau. Experience en reporting.",
+      "rank": 5,
+      "label": "partiellement_pertinent"
+    },
+    {
+      "filename": "cv_cuisine.pdf",
+      "score": 0.1673,
+      "best_match_excerpt": "Chef de cuisine. 10 ans d’experience en restauration gastronomique. Gestion d’equipe, creation de menus, normes HACCP.",
+      "rank": 6,
+      "label": "hors_sujet"
+    }
+  ]
+}

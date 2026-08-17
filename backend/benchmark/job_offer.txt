@@ -1,0 +1,1 @@
+Développeur Python FastAPI — Nous recherchons un développeur backend Python avec au minimum 3 ans d'expérience. Maîtrise de FastAPI, conception d'APIs REST et bonnes pratiques de développement. Connaissance SQL appréciée. Mission : concevoir et maintenir des services API pour notre plateforme.

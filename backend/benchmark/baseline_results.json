@@ -1,0 +1,38 @@
+{
+  "timestamp": "2026-08-17T10:01:17.441978+00:00",
+  "model_name": "sentence-transformers/all-MiniLM-L6-v2",
+  "job_description": "Développeur Python FastAPI — Nous recherchons un développeur backend Python avec au minimum 3 ans d'expérience. Maîtrise de FastAPI, conception d'APIs REST et bonnes pratiques de développement. Connaissance SQL appréciée. Mission : concevoir et maintenir des services API pour notre plateforme.",
+  "candidate_count": 5,
+  "results": [
+    {
+      "filename": "cv_python_fastapi.pdf",
+      "score": 0.659,
+      "rank": 1,
+      "label": "pertinent"
+    },
+    {
+      "filename": "cv_python_django.pdf",
+      "score": 0.6059,
+      "rank": 2,
+      "label": "partiellement_pertinent"
+    },
+    {
+      "filename": "cv_data_analyst.pdf",
+      "score": 0.5041,
+      "rank": 3,
+      "label": "partiellement_pertinent"
+    },
+    {
+      "filename": "cv_java_spring.pdf",
+      "score": 0.2587,
+      "rank": 4,
+      "label": "partiellement_pertinent"
+    },
+    {
+      "filename": "cv_cuisine.pdf",
+      "score": 0.1815,
+      "rank": 5,
+      "label": "hors_sujet"
+    }
+  ]
+}
