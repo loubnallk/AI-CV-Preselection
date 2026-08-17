@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "AI CV Preselection",
   description:
-    "Plateforme de présélection de CV par similarité sémantique avec une offre d'emploi.",
+    "Présélection de CV par score hybride sémantique et compétences, avec classement explicable.",
 };
 
 export default function RootLayout({

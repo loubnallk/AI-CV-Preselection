@@ -54,9 +54,10 @@ export default function Home() {
             AI CV Preselection
           </h1>
           <p className="max-w-2xl text-sm leading-6 text-slate-600 sm:text-base">
-            Analysez et classez automatiquement des CV par similarité
-            sémantique avec une offre d&apos;emploi. Idéal pour une
-            présélection rapide avant entretien.
+            Classez des CV à partir d&apos;un score hybride combinant
+            similarité sémantique et correspondance de compétences avec
+            l&apos;offre. Outil d&apos;aide à la présélection, à valider
+            manuellement avant entretien.
           </p>
         </div>
       </header>
@@ -81,8 +82,8 @@ export default function Home() {
                 3. Lancer l&apos;analyse
               </h2>
               <p className="mt-1 text-sm text-slate-500">
-                Le classement sera calculé à partir de la similarité entre
-                l&apos;offre et chaque CV.
+                Le classement combine un score sémantique et un score
+                compétences pour produire un résultat explicable par candidat.
               </p>
             </div>
 
@@ -136,14 +137,15 @@ export default function Home() {
             results={results}
             hasSearched={hasSearched}
             loading={loading}
+            error={error}
           />
         </div>
       </main>
 
       <footer className="border-t border-slate-200/80 bg-white/70">
         <div className="mx-auto max-w-6xl px-4 py-4 text-center text-xs text-slate-500 sm:px-6 lg:px-8">
-          Plateforme de démonstration — similarité sémantique via embeddings
-          pré-entraînés
+          Plateforme de démonstration — scoring hybride sémantique et
+          compétences
         </div>
       </footer>
     </div>

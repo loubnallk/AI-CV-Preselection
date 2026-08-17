@@ -1,7 +1,22 @@
+export interface ScoreBreakdown {
+  semantic: number;
+  keywords: number | null;
+  weights: {
+    semantic: number;
+    keywords: number;
+  };
+  fallback?: string | null;
+}
+
 export interface AnalyzeResult {
   filename: string;
   score: number;
   rank: number;
+  best_match_excerpt?: string;
+  score_breakdown?: ScoreBreakdown;
+  matched_skills?: string[];
+  missing_skills?: string[];
+  skills_required?: string[];
 }
 
 export interface AnalyzeResponse {
