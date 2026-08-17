@@ -1,0 +1,19 @@
+[
+  { "name": "Python", "aliases": ["python"] },
+  { "name": "FastAPI", "aliases": ["fastapi", "fast api"] },
+  { "name": "Flask", "aliases": ["flask"] },
+  { "name": "Django", "aliases": ["django"] },
+  { "name": "REST", "aliases": ["api rest", "apis rest", "rest api"] },
+  { "name": "SQL", "aliases": ["sql"] },
+  { "name": "PostgreSQL", "aliases": ["postgresql", "postgres"] },
+  { "name": "MySQL", "aliases": ["mysql"] },
+  { "name": "Java", "aliases": ["java"] },
+  { "name": "Spring", "aliases": ["spring boot", "springboot"] },
+  { "name": "Kubernetes", "aliases": ["kubernetes", "k8s"] },
+  { "name": "Docker", "aliases": ["docker"] },
+  { "name": "React", "aliases": ["react", "reactjs"] },
+  { "name": "TypeScript", "aliases": ["typescript", "ts"] },
+  { "name": "JavaScript", "aliases": ["javascript", "js"] },
+  { "name": "Pandas", "aliases": ["pandas"] },
+  { "name": "Celery", "aliases": ["celery"] }
+]

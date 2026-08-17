@@ -54,7 +54,7 @@ def run_benchmark(output_name: str) -> dict:
     payload = {
         "timestamp": datetime.now(UTC).isoformat(),
         "model_name": MODEL_NAME,
-        "matching_strategy": "chunk_max_similarity",
+        "matching_strategy": "hybrid_semantic_keywords",
         "job_description": job_text,
         "candidate_count": len(enriched),
         "results": enriched,
@@ -71,18 +71,25 @@ def run_benchmark(output_name: str) -> dict:
 
 def print_summary(payload: dict) -> None:
     print(f"\nModel: {payload['model_name']}")
+    print(f"Strategy: {payload['matching_strategy']}")
+    if payload["results"]:
+        print(f"Skills required: {payload['results'][0].get('skills_required', [])}")
     print("Ranking:")
     for item in payload["results"]:
-        excerpt = item.get("best_match_excerpt", "")
-        excerpt_preview = (
-            excerpt[:70] + "..." if len(excerpt) > 70 else excerpt
-        )
+        breakdown = item.get("score_breakdown", {})
+        semantic = breakdown.get("semantic")
+        keywords = breakdown.get("keywords")
+        kw_display = f"{keywords:.4f}" if keywords is not None else "n/a"
         print(
             f"  #{item['rank']} {item['filename']:22} "
-            f"score={item['score']:.4f}  [{item['label']}]"
+            f"final={item['score']:.4f} sem={semantic:.4f} kw={kw_display}  [{item['label']}]"
         )
-        if excerpt_preview:
-            print(f"      excerpt: {excerpt_preview}")
+        print(f"      matched={item.get('matched_skills', [])}")
+        print(f"      missing={item.get('missing_skills', [])}")
+        excerpt = item.get("best_match_excerpt", "")
+        if excerpt:
+            preview = excerpt[:70] + "..." if len(excerpt) > 70 else excerpt
+            print(f"      excerpt: {preview}")
 
 
 if __name__ == "__main__":

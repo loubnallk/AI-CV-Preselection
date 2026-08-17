@@ -2,21 +2,15 @@ from sentence_transformers.util import cos_sim
 
 from services.chunking import chunk_text
 from services.embeddings import get_embedding, get_embeddings
+from services.skills_matcher import extract_skills_from_job, match_skills_in_cv
+
+SEMANTIC_WEIGHT = 0.6
+KEYWORD_WEIGHT = 0.4
 
 
 def cosine_similarity(vec_a: list[float], vec_b: list[float]) -> float:
     """
     Calcule la similarite cosinus entre deux vecteurs d'embedding.
-
-    Args:
-        vec_a: premier vecteur.
-        vec_b: second vecteur.
-
-    Returns:
-        Score de similarite entre 0 et 1 (plus haut = plus similaire).
-
-    Raises:
-        ValueError: si les vecteurs sont vides ou de dimensions differentes.
     """
     if not vec_a or not vec_b:
         raise ValueError("Les vecteurs ne peuvent pas etre vides.")
@@ -31,10 +25,7 @@ def cosine_similarity(vec_a: list[float], vec_b: list[float]) -> float:
 
 def score_cv_against_job(job_embedding: list[float], cv_text: str) -> dict:
     """
-    Score un CV via le passage le plus proche de l'offre.
-
-    Returns:
-        dict avec score et best_match_excerpt.
+    Score semantique d'un CV via le passage le plus proche de l'offre.
     """
     chunks = chunk_text(cv_text)
     if not chunks:
@@ -51,8 +42,39 @@ def score_cv_against_job(job_embedding: list[float], cv_text: str) -> dict:
             best_excerpt = chunk
 
     return {
-        "score": best_score,
+        "semantic_score": best_score,
         "best_match_excerpt": best_excerpt,
+    }
+
+
+def _build_hybrid_score(
+    semantic_score: float,
+    keyword_score: float,
+    skills_required: list[str],
+) -> dict:
+    if not skills_required:
+        return {
+            "score": semantic_score,
+            "score_breakdown": {
+                "semantic": semantic_score,
+                "keywords": None,
+                "weights": {"semantic": 1.0, "keywords": 0.0},
+                "fallback": "semantic_only",
+            },
+        }
+
+    final_score = round(
+        (SEMANTIC_WEIGHT * semantic_score) + (KEYWORD_WEIGHT * keyword_score),
+        4,
+    )
+    return {
+        "score": final_score,
+        "score_breakdown": {
+            "semantic": semantic_score,
+            "keywords": keyword_score,
+            "weights": {"semantic": SEMANTIC_WEIGHT, "keywords": KEYWORD_WEIGHT},
+            "fallback": None,
+        },
     }
 
 
@@ -61,25 +83,30 @@ def rank_candidates_from_texts(
     candidates: list[dict],
 ) -> list[dict]:
     """
-    Encode l'offre puis classe les candidats par pertinence (matching par chunks).
-
-    Args:
-        job_text: texte de l'offre d'emploi.
-        candidates: liste de dicts avec au minimum "filename" et "text".
-
-    Returns:
-        Liste triee par score decroissant (filename, score, rank, best_match_excerpt).
+    Classe les candidats avec un score hybride semantique + competences.
     """
     job_embedding = get_embedding(job_text)
+    skills_required = extract_skills_from_job(job_text)
 
     scored = []
     for candidate in candidates:
-        match = score_cv_against_job(job_embedding, candidate["text"])
+        semantic_match = score_cv_against_job(job_embedding, candidate["text"])
+        skills_match = match_skills_in_cv(candidate["text"], skills_required)
+        hybrid = _build_hybrid_score(
+            semantic_match["semantic_score"],
+            skills_match["keyword_score"],
+            skills_required,
+        )
+
         scored.append(
             {
                 "filename": candidate["filename"],
-                "score": match["score"],
-                "best_match_excerpt": match["best_match_excerpt"],
+                "score": hybrid["score"],
+                "best_match_excerpt": semantic_match["best_match_excerpt"],
+                "score_breakdown": hybrid["score_breakdown"],
+                "matched_skills": skills_match["matched_skills"],
+                "missing_skills": skills_match["missing_skills"],
+                "skills_required": skills_required,
             }
         )
 

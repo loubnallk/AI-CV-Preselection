@@ -1,0 +1,188 @@
+{
+  "timestamp": "2026-08-17T10:47:11.664005+00:00",
+  "model_name": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+  "matching_strategy": "hybrid_semantic_keywords",
+  "job_description": "Développeur Python FastAPI — Nous recherchons un développeur backend Python avec au minimum 3 ans d'expérience. Maîtrise de FastAPI, conception d'APIs REST et bonnes pratiques de développement. Connaissance SQL appréciée. Mission : concevoir et maintenir des services API pour notre plateforme.",
+  "candidate_count": 6,
+  "results": [
+    {
+      "filename": "cv_long_mixed.pdf",
+      "score": 0.7955,
+      "best_match_excerpt": "Developpeur Python senior. 4 ans d’experience FastAPI, APIs REST, PostgreSQL.",
+      "score_breakdown": {
+        "semantic": 0.8258,
+        "keywords": 0.75,
+        "weights": {
+          "semantic": 0.6,
+          "keywords": 0.4
+        },
+        "fallback": null
+      },
+      "matched_skills": [
+        "Python",
+        "FastAPI",
+        "REST"
+      ],
+      "missing_skills": [
+        "SQL"
+      ],
+      "skills_required": [
+        "Python",
+        "FastAPI",
+        "REST",
+        "SQL"
+      ],
+      "rank": 1,
+      "label": "pertinent"
+    },
+    {
+      "filename": "cv_python_fastapi.pdf",
+      "score": 0.7805,
+      "best_match_excerpt": "Developpeur Python senior. 4 ans d’experience en developpement backend avec FastAPI et Flask. Conception d’APIs REST, PostgreSQL, tests unitaires.",
+      "score_breakdown": {
+        "semantic": 0.8008,
+        "keywords": 0.75,
+        "weights": {
+          "semantic": 0.6,
+          "keywords": 0.4
+        },
+        "fallback": null
+      },
+      "matched_skills": [
+        "Python",
+        "FastAPI",
+        "REST"
+      ],
+      "missing_skills": [
+        "SQL"
+      ],
+      "skills_required": [
+        "Python",
+        "FastAPI",
+        "REST",
+        "SQL"
+      ],
+      "rank": 2,
+      "label": "pertinent"
+    },
+    {
+      "filename": "cv_python_django.pdf",
+      "score": 0.5137,
+      "best_match_excerpt": "Ingenieur logiciel Python. 3 ans d’experience Django et Celery. Developpement web, bases de donnees MySQL, bonnes pratiques Agile.",
+      "score_breakdown": {
+        "semantic": 0.6895,
+        "keywords": 0.25,
+        "weights": {
+          "semantic": 0.6,
+          "keywords": 0.4
+        },
+        "fallback": null
+      },
+      "matched_skills": [
+        "Python"
+      ],
+      "missing_skills": [
+        "FastAPI",
+        "REST",
+        "SQL"
+      ],
+      "skills_required": [
+        "Python",
+        "FastAPI",
+        "REST",
+        "SQL"
+      ],
+      "rank": 3,
+      "label": "partiellement_pertinent"
+    },
+    {
+      "filename": "cv_data_analyst.pdf",
+      "score": 0.4417,
+      "best_match_excerpt": "Data Analyst. Python pour l’analyse de donnees, pandas, SQL, visualisation Tableau. Experience en reporting.",
+      "score_breakdown": {
+        "semantic": 0.4029,
+        "keywords": 0.5,
+        "weights": {
+          "semantic": 0.6,
+          "keywords": 0.4
+        },
+        "fallback": null
+      },
+      "matched_skills": [
+        "Python",
+        "SQL"
+      ],
+      "missing_skills": [
+        "FastAPI",
+        "REST"
+      ],
+      "skills_required": [
+        "Python",
+        "FastAPI",
+        "REST",
+        "SQL"
+      ],
+      "rank": 4,
+      "label": "partiellement_pertinent"
+    },
+    {
+      "filename": "cv_java_spring.pdf",
+      "score": 0.3441,
+      "best_match_excerpt": "Developpeur Java backend. 5 ans d’experience Spring Boot, microservices, APIs REST, Kubernetes.",
+      "score_breakdown": {
+        "semantic": 0.4068,
+        "keywords": 0.25,
+        "weights": {
+          "semantic": 0.6,
+          "keywords": 0.4
+        },
+        "fallback": null
+      },
+      "matched_skills": [
+        "REST"
+      ],
+      "missing_skills": [
+        "Python",
+        "FastAPI",
+        "SQL"
+      ],
+      "skills_required": [
+        "Python",
+        "FastAPI",
+        "REST",
+        "SQL"
+      ],
+      "rank": 5,
+      "label": "partiellement_pertinent"
+    },
+    {
+      "filename": "cv_cuisine.pdf",
+      "score": 0.1004,
+      "best_match_excerpt": "Chef de cuisine. 10 ans d’experience en restauration gastronomique. Gestion d’equipe, creation de menus, normes HACCP.",
+      "score_breakdown": {
+        "semantic": 0.1673,
+        "keywords": 0.0,
+        "weights": {
+          "semantic": 0.6,
+          "keywords": 0.4
+        },
+        "fallback": null
+      },
+      "matched_skills": [],
+      "missing_skills": [
+        "Python",
+        "FastAPI",
+        "REST",
+        "SQL"
+      ],
+      "skills_required": [
+        "Python",
+        "FastAPI",
+        "REST",
+        "SQL"
+      ],
+      "rank": 6,
+      "label": "hors_sujet"
+    }
+  ]
+}

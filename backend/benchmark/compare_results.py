@@ -12,8 +12,8 @@ def load(name: str) -> dict:
 
 
 def main() -> None:
-    reference_name = sys.argv[1] if len(sys.argv) > 1 else "step1_results.json"
-    current_name = sys.argv[2] if len(sys.argv) > 2 else "step2_results.json"
+    reference_name = sys.argv[1] if len(sys.argv) > 1 else "step2_results.json"
+    current_name = sys.argv[2] if len(sys.argv) > 2 else "step3_results.json"
 
     reference = load(reference_name)
     current = load(current_name)
