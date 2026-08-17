@@ -14,6 +14,7 @@ export default function Home() {
   const [results, setResults] = useState<AnalyzeResult[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [hasSearched, setHasSearched] = useState(false);
 
   const canAnalyze = jobDescription.trim().length > 0 && cvFiles.length > 0;
 
@@ -29,64 +30,122 @@ export default function Home() {
     try {
       const response = await analyzeCvs(jobDescription.trim(), cvFiles);
       setResults(response.results);
+      setHasSearched(true);
     } catch (err) {
       const message =
         err instanceof Error
           ? err.message
           : "Une erreur inattendue est survenue.";
       setError(message);
+      setHasSearched(true);
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <div className="min-h-full bg-zinc-50">
-      <main className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
-        <header className="mb-8">
-          <h1 className="text-3xl font-bold tracking-tight text-zinc-900">
+    <div className="min-h-full bg-[var(--background)]">
+      <header className="border-b border-slate-200/80 bg-white/90 backdrop-blur">
+        <div className="mx-auto flex max-w-6xl flex-col gap-2 px-4 py-6 sm:px-6 lg:px-8">
+          <span className="w-fit rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-blue-700">
+            Présélection IA
+          </span>
+          <h1 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
             AI CV Preselection
           </h1>
-          <p className="mt-2 text-sm text-zinc-600">
-            Analysez et classez des CV par pertinence par rapport à une offre
-            d&apos;emploi.
+          <p className="max-w-2xl text-sm leading-6 text-slate-600 sm:text-base">
+            Analysez et classez automatiquement des CV par similarité
+            sémantique avec une offre d&apos;emploi. Idéal pour une
+            présélection rapide avant entretien.
           </p>
-        </header>
+        </div>
+      </header>
 
-        <section className="space-y-6 rounded-xl border border-zinc-200 bg-white p-6 shadow-sm">
+      <main className="mx-auto grid max-w-6xl gap-8 px-4 py-8 sm:px-6 lg:grid-cols-5 lg:px-8 lg:py-10">
+        <section className="space-y-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm lg:col-span-3">
           <JobDescriptionForm
             value={jobDescription}
             onChange={setJobDescription}
             disabled={loading}
           />
 
+          <div className="h-px bg-slate-100" />
+
           <CvUpload files={cvFiles} onChange={setCvFiles} disabled={loading} />
 
-          <div className="flex items-center gap-4">
+          <div className="h-px bg-slate-100" />
+
+          <div className="space-y-4">
+            <div>
+              <h2 className="text-base font-semibold text-slate-900">
+                3. Lancer l&apos;analyse
+              </h2>
+              <p className="mt-1 text-sm text-slate-500">
+                Le classement sera calculé à partir de la similarité entre
+                l&apos;offre et chaque CV.
+              </p>
+            </div>
+
             <AnalyzeButton
               onClick={handleAnalyze}
               disabled={!canAnalyze}
               loading={loading}
             />
-            {loading && (
-              <p className="text-sm text-zinc-500">
-                Analyse en cours, cela peut prendre quelques secondes...
+
+            {!canAnalyze && !loading && (
+              <p className="text-sm text-slate-500">
+                Ajoutez une description d&apos;offre et au moins un CV PDF pour
+                activer l&apos;analyse.
               </p>
             )}
-          </div>
 
-          {error && (
-            <div
-              role="alert"
-              className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
-            >
-              {error}
-            </div>
-          )}
+            {loading && (
+              <div className="rounded-xl border border-blue-100 bg-blue-50 px-4 py-3 text-sm text-blue-800">
+                Analyse en cours… L&apos;extraction, la vectorisation et le
+                classement peuvent prendre quelques secondes.
+              </div>
+            )}
+
+            {error && (
+              <div
+                role="alert"
+                className="flex gap-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800"
+              >
+                <svg
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  className="mt-0.5 h-5 w-5 shrink-0 text-red-500"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <circle cx="12" cy="12" r="10" />
+                  <path d="M12 8v5m0 4h.01" strokeLinecap="round" />
+                </svg>
+                <div>
+                  <p className="font-semibold">Erreur lors de l&apos;analyse</p>
+                  <p className="mt-1">{error}</p>
+                </div>
+              </div>
+            )}
+          </div>
         </section>
 
-        <RankingResults results={results} />
+        <div className="lg:col-span-2">
+          <RankingResults
+            results={results}
+            hasSearched={hasSearched}
+            loading={loading}
+          />
+        </div>
       </main>
+
+      <footer className="border-t border-slate-200/80 bg-white/70">
+        <div className="mx-auto max-w-6xl px-4 py-4 text-center text-xs text-slate-500 sm:px-6 lg:px-8">
+          Plateforme de démonstration — similarité sémantique via embeddings
+          pré-entraînés
+        </div>
+      </footer>
     </div>
   );
 }
