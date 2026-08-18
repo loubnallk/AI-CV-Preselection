@@ -1,35 +1,218 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f4f6fb;
-  --foreground: #0f172a;
-  --card: #ffffff;
-  --primary: #2563eb;
-  --primary-hover: #1d4ed8;
-  --accent: #059669;
-  --muted: #64748b;
-  --border: #e2e8f0;
+  --cream: #f3e8d0;
+  --champagne-beige: #e8d2ae;
+  --chocolate: #5a3825;
+  --deep-brown: #241a15;
+  --black: #0f0d0b;
+  --muted-gold: #c6a15b;
+  --champagne-gold: #d8b878;
+  --background: var(--cream);
+  --foreground: var(--deep-brown);
+  --card: #fffbf5;
+  --border: rgba(90, 56, 37, 0.15);
+  --border-gold: rgba(198, 161, 91, 0.45);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-cream: var(--cream);
+  --color-champagne-beige: var(--champagne-beige);
+  --color-chocolate: var(--chocolate);
+  --color-deep-brown: var(--deep-brown);
+  --color-black: var(--black);
+  --color-muted-gold: var(--muted-gold);
+  --color-champagne-gold: var(--champagne-gold);
+  --color-card: var(--card);
+  --font-sans: var(--font-dm-sans);
+  --font-display: var(--font-cormorant);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-family: var(--font-dm-sans), system-ui, sans-serif;
 }
 
-@keyframes spin {
+.font-display {
+  font-family: var(--font-cormorant), Georgia, serif;
+}
+
+.bg-page-gradient {
+  background:
+    radial-gradient(ellipse 80% 60% at 50% -10%, rgba(232, 210, 174, 0.55), transparent 60%),
+    linear-gradient(180deg, var(--cream) 0%, #efe3c8 100%);
+}
+
+.bg-grain {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+}
+
+.leopard-accent {
+  background-image: url("/patterns/leopard-subtle.svg");
+  background-size: 140px 140px;
+  opacity: 0.06;
+}
+
+.card-premium {
+  background: var(--card);
+  border: 1px solid var(--border);
+  box-shadow: 0 4px 24px rgba(36, 26, 21, 0.08);
+}
+
+.card-premium-highlight {
+  background: linear-gradient(145deg, #fffbf5 0%, var(--cream) 55%, rgba(232, 210, 174, 0.35) 100%);
+  border: 1px solid var(--border-gold);
+  box-shadow:
+    0 8px 32px rgba(36, 26, 21, 0.12),
+    inset 0 1px 0 rgba(216, 184, 120, 0.25);
+}
+
+.divider-gold {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--muted-gold), transparent);
+}
+
+.label-caps {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--chocolate);
+}
+
+/* Sparkles latéraux — marges de page uniquement */
+.page-edge-decor {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.page-edge-decor__column {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: min(10vw, 88px);
+}
+
+.page-edge-decor__column--left {
+  left: 0;
+}
+
+.page-edge-decor__column--right {
+  right: 0;
+}
+
+.edge-sparkle {
+  position: absolute;
+  border-radius: 50%;
+  background: var(--champagne-gold);
+  opacity: 0.12;
+  animation: edge-sparkle-twinkle 7s ease-in-out infinite;
+}
+
+.edge-sparkle--sm {
+  width: 2px;
+  height: 2px;
+}
+
+.edge-sparkle--md {
+  width: 3px;
+  height: 3px;
+}
+
+.edge-sparkle-diamond {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  background: var(--muted-gold);
+  opacity: 0.1;
+  transform: rotate(45deg);
+  animation: edge-sparkle-twinkle 8s ease-in-out infinite;
+}
+
+.edge-sparkle:nth-of-type(1) { animation-delay: 0s; }
+.edge-sparkle:nth-of-type(2) { animation-delay: 1.4s; }
+.edge-sparkle:nth-of-type(3) { animation-delay: 2.8s; }
+.edge-sparkle:nth-of-type(4) { animation-delay: 4.2s; }
+.edge-sparkle:nth-of-type(5) { animation-delay: 5.6s; }
+
+.page-edge-decor__column--right .edge-sparkle:nth-of-type(1) { animation-delay: 0.8s; }
+.page-edge-decor__column--right .edge-sparkle:nth-of-type(2) { animation-delay: 2.2s; }
+.page-edge-decor__column--right .edge-sparkle:nth-of-type(3) { animation-delay: 3.6s; }
+.page-edge-decor__column--right .edge-sparkle:nth-of-type(4) { animation-delay: 5s; }
+.page-edge-decor__column--right .edge-sparkle:nth-of-type(5) { animation-delay: 6.4s; }
+
+.page-edge-decor__column--left .edge-sparkle-diamond { animation-delay: 2s; }
+.page-edge-decor__column--right .edge-sparkle-diamond { animation-delay: 3.4s; }
+
+@keyframes edge-sparkle-twinkle {
+  0%, 100% { opacity: 0.08; transform: scale(0.85) rotate(45deg); }
+  50% { opacity: 0.22; transform: scale(1) rotate(45deg); }
+}
+
+.edge-sparkle.edge-sparkle--sm,
+.edge-sparkle.edge-sparkle--md {
+  animation-name: edge-sparkle-twinkle-dot;
+}
+
+@keyframes edge-sparkle-twinkle-dot {
+  0%, 100% { opacity: 0.08; transform: scale(0.85); }
+  50% { opacity: 0.22; transform: scale(1); }
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
   to {
-    transform: rotate(360deg);
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.animate-stagger-1 { animation-delay: 80ms; }
+.animate-stagger-2 { animation-delay: 160ms; }
+.animate-stagger-3 { animation-delay: 240ms; }
+
 .animate-spin-slow {
-  animation: spin 0.8s linear infinite;
+  animation: spin 0.9s linear infinite;
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(232, 210, 174, 0.35) 0%,
+    rgba(216, 184, 120, 0.25) 50%,
+    rgba(232, 210, 174, 0.35) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.8s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-in-up,
+  .skeleton-shimmer,
+  .edge-sparkle,
+  .edge-sparkle-diamond {
+    animation: none !important;
+    opacity: 0.12;
+  }
 }

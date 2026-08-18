@@ -9,7 +9,7 @@ function LoadingSpinner() {
     <svg
       aria-hidden="true"
       viewBox="0 0 24 24"
-      className="h-5 w-5 animate-spin-slow text-white"
+      className="h-5 w-5 animate-spin-slow text-champagne-gold"
       fill="none"
     >
       <circle
@@ -39,7 +39,7 @@ export default function AnalyzeButton({
       type="button"
       onClick={onClick}
       disabled={disabled || loading}
-      className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-6 py-3.5 text-base font-semibold text-white shadow-lg shadow-blue-600/20 transition hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-200 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:shadow-none sm:w-auto"
+      className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-muted-gold/50 bg-black px-6 py-3.5 text-base font-semibold text-cream shadow-lg shadow-black/20 transition duration-300 hover:-translate-y-0.5 hover:border-champagne-gold hover:shadow-[0_8px_24px_rgba(198,161,91,0.25)] focus:outline-none focus:ring-2 focus:ring-champagne-gold/40 disabled:cursor-not-allowed disabled:border-transparent disabled:bg-champagne-beige/60 disabled:text-chocolate/60 disabled:shadow-none disabled:hover:translate-y-0 sm:w-auto"
     >
       {loading ? (
         <>
@@ -51,7 +51,7 @@ export default function AnalyzeButton({
           <svg
             aria-hidden="true"
             viewBox="0 0 24 24"
-            className="h-5 w-5"
+            className="h-5 w-5 text-champagne-gold"
             fill="none"
             stroke="currentColor"
             strokeWidth="2"

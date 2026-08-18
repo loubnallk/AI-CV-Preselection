@@ -1,3 +1,7 @@
+"use client";
+
+import { useEffect, useState } from "react";
+
 import type { AnalyzeResult } from "@/lib/api";
 
 interface RankingResultsProps {
@@ -29,30 +33,34 @@ function ScoreBar({
   label?: string;
 }) {
   const percentage = Math.max(0, Math.min(score * 100, 100));
+  const [width, setWidth] = useState(0);
+
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => setWidth(percentage));
+    return () => cancelAnimationFrame(frame);
+  }, [percentage]);
 
   return (
     <div className="space-y-1">
       {label && (
-        <div className="flex items-center justify-between text-xs text-slate-500">
+        <div className="flex items-center justify-between text-xs text-chocolate">
           <span>{label}</span>
-          <span className="font-medium text-slate-700">{formatScore(score)}</span>
+          <span className="font-medium text-deep-brown">{formatScore(score)}</span>
         </div>
       )}
       <div className="flex items-center gap-3">
-        <div className="h-2 flex-1 overflow-hidden rounded-full bg-slate-100">
+        <div className="h-2 flex-1 overflow-hidden rounded-full bg-champagne-beige/60">
           <div
-            className={`h-full rounded-full transition-all ${
-              highlight ? "bg-emerald-500" : "bg-blue-500"
+            className={`h-full rounded-full transition-[width] duration-700 ease-out ${
+              highlight
+                ? "bg-gradient-to-r from-muted-gold to-champagne-gold"
+                : "bg-gradient-to-r from-chocolate/70 to-muted-gold"
             }`}
-            style={{ width: `${percentage}%` }}
+            style={{ width: `${width}%` }}
           />
         </div>
         {!label && (
-          <span
-            className={`min-w-14 text-right text-sm font-semibold ${
-              highlight ? "text-emerald-700" : "text-slate-800"
-            }`}
-          >
+          <span className="min-w-14 text-right text-sm font-semibold text-deep-brown">
             {formatScore(score)}
           </span>
         )}
@@ -76,14 +84,12 @@ function SkillBadges({
 
   const styles =
     variant === "matched"
-      ? "border-emerald-200 bg-emerald-50 text-emerald-800"
-      : "border-amber-200 bg-amber-50 text-amber-800";
+      ? "border-[var(--border-gold)] bg-champagne-beige/50 text-deep-brown"
+      : "border-dashed border-chocolate/30 bg-cream/80 text-chocolate";
 
   return (
     <div>
-      <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">
-        {title}
-      </p>
+      <p className="label-caps mb-2">{title}</p>
       <div className="flex flex-wrap gap-2">
         {skills.map((skill) => (
           <span
@@ -98,7 +104,13 @@ function SkillBadges({
   );
 }
 
-function ScoreDetails({ result, highlight = false }: { result: AnalyzeResult; highlight?: boolean }) {
+function ScoreDetails({
+  result,
+  highlight = false,
+}: {
+  result: AnalyzeResult;
+  highlight?: boolean;
+}) {
   const breakdown = result.score_breakdown;
 
   if (!breakdown) {
@@ -116,21 +128,21 @@ function ScoreDetails({ result, highlight = false }: { result: AnalyzeResult; hi
       <ScoreBar score={result.score} highlight={highlight} label="Score final" />
 
       <div className="grid gap-3 sm:grid-cols-2">
-        <div className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2">
-          <p className="text-xs text-slate-500">Score sémantique</p>
-          <p className="mt-1 text-sm font-semibold text-slate-900">
+        <div className="rounded-lg border border-[var(--border)] bg-champagne-beige/25 px-3 py-2">
+          <p className="label-caps">Score sémantique</p>
+          <p className="mt-1 text-sm font-semibold text-deep-brown">
             {formatScore(breakdown.semantic)}
           </p>
         </div>
-        <div className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2">
-          <p className="text-xs text-slate-500">Score compétences</p>
-          <p className="mt-1 text-sm font-semibold text-slate-900">
+        <div className="rounded-lg border border-[var(--border)] bg-champagne-beige/25 px-3 py-2">
+          <p className="label-caps">Score compétences</p>
+          <p className="mt-1 text-sm font-semibold text-deep-brown">
             {breakdown.keywords !== null ? formatScore(breakdown.keywords) : "N/A"}
           </p>
         </div>
       </div>
 
-      <p className="text-xs text-slate-500">
+      <p className="text-xs leading-5 text-chocolate">
         {isSemanticOnly ? (
           "Poids utilisés : 100% sémantique (aucune compétence détectée dans l'offre)."
         ) : (
@@ -147,11 +159,11 @@ function ScoreDetails({ result, highlight = false }: { result: AnalyzeResult; hi
 
 function ExcerptBlock({ excerpt }: { excerpt: string }) {
   return (
-    <div className="rounded-lg border border-slate-200 bg-slate-50 px-4 py-3">
-      <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-        Extrait le plus pertinent
+    <div className="rounded-lg border border-[var(--border)] border-l-[3px] border-l-muted-gold bg-champagne-beige/20 px-4 py-3">
+      <p className="label-caps">Extrait le plus pertinent</p>
+      <p className="font-display mt-2 text-sm italic leading-6 text-chocolate">
+        &ldquo;{excerpt}&rdquo;
       </p>
-      <p className="mt-2 text-sm leading-6 text-slate-700">&ldquo;{excerpt}&rdquo;</p>
     </div>
   );
 }
@@ -179,7 +191,7 @@ function CandidateDetails({
           <SkillBadges title="Compétences trouvées" skills={matchedSkills} variant="matched" />
           <SkillBadges title="Compétences manquantes" skills={missingSkills} variant="missing" />
           {matchedSkills.length === 0 && missingSkills.length === 0 && (
-            <p className="text-sm text-slate-500">
+            <p className="text-sm text-chocolate">
               Aucune compétence du dictionnaire détectée pour ce candidat.
             </p>
           )}
@@ -195,19 +207,21 @@ function CandidateDetails({
 
 function TopCandidateCard({ result }: { result: AnalyzeResult }) {
   return (
-    <article className="overflow-hidden rounded-2xl border border-emerald-200 bg-gradient-to-br from-emerald-50 via-white to-white p-5 shadow-sm ring-1 ring-emerald-100">
-      <div className="space-y-4">
+    <article className="card-premium-highlight relative overflow-hidden rounded-2xl p-5 transition duration-300 hover:-translate-y-0.5">
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute right-0 top-0 h-16 w-16 leopard-accent rounded-bl-3xl"
+      />
+      <div className="relative space-y-4">
         <div>
-          <span className="inline-flex rounded-full bg-emerald-600 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white">
+          <span className="inline-flex rounded-full border border-muted-gold/60 bg-black px-3 py-1 text-xs font-semibold uppercase tracking-wide text-champagne-gold">
             Meilleur candidat
           </span>
-          <p className="mt-3 text-xs font-semibold uppercase tracking-wide text-emerald-700">
-            Rang #{result.rank}
-          </p>
-          <h3 className="mt-1 break-all text-lg font-bold text-slate-900">
+          <p className="label-caps mt-3 text-muted-gold">Rang #{result.rank}</p>
+          <h3 className="font-display mt-1 break-all text-xl font-semibold text-deep-brown">
             {result.filename}
           </h3>
-          <p className="mt-1 text-sm text-slate-600">
+          <p className="mt-1 text-sm leading-6 text-chocolate">
             {hasDetailedBreakdown(result)
               ? "Meilleure correspondance globale avec l'offre d'emploi."
               : "Correspondance la plus élevée avec l'offre d'emploi."}
@@ -222,9 +236,9 @@ function TopCandidateCard({ result }: { result: AnalyzeResult }) {
 
 function AnalysisErrorState() {
   return (
-    <div className="rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-sm text-red-800">
+    <div className="rounded-2xl border border-chocolate/25 bg-champagne-beige/30 px-5 py-4 text-sm text-deep-brown">
       <p className="font-semibold">Analyse interrompue</p>
-      <p className="mt-1">
+      <p className="mt-1 text-chocolate">
         Le classement n&apos;a pas pu être généré. Consultez le message
         d&apos;erreur dans le formulaire pour corriger le problème, puis
         relancez l&apos;analyse.
@@ -233,17 +247,26 @@ function AnalysisErrorState() {
   );
 }
 
-function CandidateRow({ result }: { result: AnalyzeResult }) {
+function CandidateRow({
+  result,
+  index,
+}: {
+  result: AnalyzeResult;
+  index: number;
+}) {
   return (
-    <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+    <article
+      className="card-premium animate-fade-in-up rounded-xl p-4 transition duration-300 hover:-translate-y-0.5 hover:shadow-[0_6px_20px_rgba(36,26,21,0.1)]"
+      style={{ animationDelay: `${index * 100}ms` }}
+    >
       <div className="space-y-4">
         <div className="flex items-start gap-3">
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-slate-100 text-sm font-bold text-slate-700">
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[var(--border-gold)] bg-champagne-beige/40 text-sm font-bold text-chocolate">
             #{result.rank}
           </span>
           <div className="min-w-0 flex-1">
-            <p className="break-all font-medium text-slate-900">{result.filename}</p>
-            <p className="text-xs text-slate-500">Candidat classé</p>
+            <p className="break-all font-medium text-deep-brown">{result.filename}</p>
+            <p className="text-xs text-chocolate/80">Candidat classé</p>
           </div>
         </div>
 
@@ -255,12 +278,12 @@ function CandidateRow({ result }: { result: AnalyzeResult }) {
 
 function EmptyResultsState() {
   return (
-    <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-slate-200 bg-white/70 px-6 py-12 text-center">
-      <div className="flex h-14 w-14 items-center justify-center rounded-full bg-slate-100">
+    <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-muted-gold/40 bg-card/70 px-6 py-12 text-center">
+      <div className="flex h-14 w-14 items-center justify-center rounded-full border border-[var(--border-gold)] bg-champagne-beige/40">
         <svg
           aria-hidden="true"
           viewBox="0 0 24 24"
-          className="h-7 w-7 text-slate-400"
+          className="h-7 w-7 text-muted-gold"
           fill="none"
           stroke="currentColor"
           strokeWidth="1.8"
@@ -268,10 +291,10 @@ function EmptyResultsState() {
           <path d="M4 19h16M6 16l3-8 3 4 3-6 3 10" strokeLinecap="round" />
         </svg>
       </div>
-      <h3 className="mt-4 text-base font-semibold text-slate-800">
+      <h3 className="font-display mt-4 text-lg font-semibold text-deep-brown">
         Aucun résultat pour le moment
       </h3>
-      <p className="mt-2 max-w-sm text-sm text-slate-500">
+      <p className="mt-2 max-w-sm text-sm leading-6 text-chocolate">
         Renseignez une offre, importez des CV PDF, puis lancez l&apos;analyse
         pour afficher le classement ici.
       </p>
@@ -281,9 +304,26 @@ function EmptyResultsState() {
 
 function NoMatchState() {
   return (
-    <div className="rounded-2xl border border-amber-200 bg-amber-50 px-5 py-4 text-sm text-amber-800">
+    <div className="rounded-2xl border border-chocolate/20 bg-champagne-beige/35 px-5 py-4 text-sm text-deep-brown">
       L&apos;analyse s&apos;est terminée, mais aucun candidat n&apos;a pu être
       classé.
+    </div>
+  );
+}
+
+function ResultsHeader({ count }: { count: number }) {
+  return (
+    <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+      <div>
+        <h2 className="font-display text-2xl font-semibold text-deep-brown">
+          Résultats du <span className="italic text-muted-gold">classement</span>
+        </h2>
+        <p className="mt-1 text-sm text-chocolate">
+          {count} candidat{count > 1 ? "s" : ""} analysé
+          {count > 1 ? "s" : ""}, trié
+          {count > 1 ? "s" : ""} par pertinence décroissante.
+        </p>
+      </div>
     </div>
   );
 }
@@ -297,10 +337,10 @@ export default function RankingResults({
   if (loading) {
     return (
       <section className="mt-8">
-        <div className="animate-pulse space-y-4 rounded-2xl border border-slate-200 bg-white p-6">
-          <div className="h-6 w-48 rounded bg-slate-200" />
-          <div className="h-28 rounded-xl bg-slate-100" />
-          <div className="h-20 rounded-xl bg-slate-100" />
+        <div className="card-premium space-y-4 rounded-2xl p-6">
+          <div className="skeleton-shimmer h-6 w-48 rounded" />
+          <div className="skeleton-shimmer h-28 rounded-xl" />
+          <div className="skeleton-shimmer h-20 rounded-xl" />
         </div>
       </section>
     );
@@ -309,7 +349,7 @@ export default function RankingResults({
   if (error) {
     return (
       <section className="mt-8">
-        <h2 className="mb-4 text-lg font-semibold text-slate-900">
+        <h2 className="font-display mb-4 text-2xl font-semibold text-deep-brown">
           Résultats du classement
         </h2>
         <AnalysisErrorState />
@@ -320,7 +360,7 @@ export default function RankingResults({
   if (!hasSearched) {
     return (
       <section className="mt-8">
-        <h2 className="mb-4 text-lg font-semibold text-slate-900">
+        <h2 className="font-display mb-4 text-2xl font-semibold text-deep-brown">
           Résultats du classement
         </h2>
         <EmptyResultsState />
@@ -331,7 +371,7 @@ export default function RankingResults({
   if (results.length === 0) {
     return (
       <section className="mt-8">
-        <h2 className="mb-4 text-lg font-semibold text-slate-900">
+        <h2 className="font-display mb-4 text-2xl font-semibold text-deep-brown">
           Résultats du classement
         </h2>
         <NoMatchState />
@@ -343,31 +383,21 @@ export default function RankingResults({
 
   return (
     <section className="mt-8">
-      <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <h2 className="text-lg font-semibold text-slate-900">
-            Résultats du classement
-          </h2>
-          <p className="mt-1 text-sm text-slate-500">
-            {results.length} candidat{results.length > 1 ? "s" : ""} analysé
-            {results.length > 1 ? "s" : ""}, trié
-            {results.length > 1 ? "s" : ""} par pertinence décroissante.
-          </p>
-        </div>
-      </div>
+      <ResultsHeader count={results.length} />
 
       <div className="space-y-4">
-        <TopCandidateCard result={topCandidate} />
+        <div className="animate-fade-in-up">
+          <TopCandidateCard result={topCandidate} />
+        </div>
 
         {otherCandidates.length > 0 && (
           <div className="space-y-3">
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-500">
-              Autres candidats
-            </h3>
-            {otherCandidates.map((result) => (
+            <h3 className="label-caps">Autres candidats</h3>
+            {otherCandidates.map((result, index) => (
               <CandidateRow
                 key={`${result.rank}-${result.filename}`}
                 result={result}
+                index={index}
               />
             ))}
           </div>
